@@ -27,7 +27,7 @@ canvas.create_text(140, 70, text="Entrez une fonction_initiale :", font=police_e
 canvas.create_text(538, 45, text="Borne 1", font=police_ecriture)
 canvas.create_text(668, 45, text="Borne 2", font=police_ecriture)
 
-default_function = "x**2-x**3-x**4+x**5"
+default_function = "x**2-x**3"
 default_borne1 = "-100"
 default_borne2 = "100"
 fonction_initiale_var = StringVar()
@@ -102,18 +102,18 @@ def afficher_resultat():
 
         # LES SIGNES
         if element== 0:
-            x_valeur = rd.uniform(valeur_borne_1, solution)
+            valeur_de_x = rd.uniform(valeur_borne_1, solution)
         else:
-            x_valeur = rd.uniform(valeur_derivee_en_0[element- 1], solution)
+            valeur_de_x = rd.uniform(valeur_derivee_en_0[element- 1], solution)
         if element== len(valeur_derivee_en_0) - 1:
-            x_value1 = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
-            signe_1 = derivee.subs(x, x_value1)
+            valeur_de_x = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
+            signe_1 = derivee.subs(x, valeur_de_x)
             if signe_1 > 0:
                 signe = '+'
             else:
                 signe = '-'  
             deuxieme_canvas.create_text(position + 40, 90, text=signe, tags='derivative')
-        signe_1 = derivee.subs(x, x_valeur)
+        signe_1 = derivee.subs(x, valeur_de_x)
         if signe_1 > 0:
             signe = '+'
         else:
@@ -149,28 +149,29 @@ def afficher_resultat():
     # ... (le reste de votre code pour la dérivée et le tableau de variation)
 
     # Écrivez le tableau LaTeX avec les valeurs de x dans un fichier
-    x_values = [valeur_borne_1] + valeur_derivee_en_0 + [valeur_borne_2]
-    x_values_latex = ['$' + latex(x) + '$' for x in x_values]
+    valeur_de_x = [valeur_borne_1] + valeur_derivee_en_0 + [valeur_borne_2]
+    valeur_de_x_latex = ['$' + latex(x) + '$' for x in valeur_de_x]
     signes = []  
     variations_fx = []
 
     for element, solution in enumerate(valeur_derivee_en_0):
         solution = solution.evalf()
+
         # LES SIGNES
         if element== 0:
-            x_valeur = rd.uniform(valeur_borne_1, solution)
-            signe_1 = derivee.subs(x, x_valeur)
+            valeur_de_x = rd.uniform(valeur_borne_1, solution)
+            signe_1 = derivee.subs(x, valeur_de_x)
         else:
-            x_valeur = rd.uniform(valeur_derivee_en_0[element- 1], solution)
-            signe_1 = derivee.subs(x, x_valeur)
+            valeur_de_x = rd.uniform(valeur_derivee_en_0[element- 1], solution)
+            signe_1 = derivee.subs(x, valeur_de_x)
         if signe_1 > 0:
             signe = '+'
         else:
             signe = '-'        
         signes.append(str(signe))
         if element== len(valeur_derivee_en_0) - 1:
-            x_value1 = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
-            signe_1 = derivee.subs(x, x_value1)
+            valeur_de_x = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
+            signe_1 = derivee.subs(x, valeur_de_x)
             if signe_1 > 0:
                 signe = '+'
             else:
@@ -178,21 +179,33 @@ def afficher_resultat():
             signes.append(str(signe))
     
         fx = fonction_initiale.subs(x, solution).evalf(3)
-        variations_fx.append('$' + latex(fx) + '$')
+        variations_fx.append(latex(fx))
 
     image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(3)
     image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(3)
     variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
-
     image_de_la_premiere_valeur = fonction_initiale.subs(x,valeur_derivee_en_0[0]).evalf(2)
-    if image_de_borne_1 > image_de_la_premiere_valeur:
-        premiere_variation = '+/'
-        variation = ['-/$' + latex(x)+ '$' for x in variations_fonction_initiale]
-    else:
-        premiere_variation = '-/'
-        variation = ['/+$' + latex(x)+ '$' for x in variations_fonction_initiale]
 
+    variations_fonction=[]
+    if image_de_borne_1 > image_de_la_premiere_valeur:
+        premiere_variation = '+/$'
+        for element in range(len(variations_fonction_initiale)-1):
+            if element%2==0:
+                variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,-/')
+            else:
+                variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,+/')
+    else:
+        premiere_variation = '-/$'
+        for element in range(len(variations_fonction_initiale-1)):
+            if element%2==0:
+                variations_fonction.append('$'+str(variations_fonction_initiale[element])+'$,+/')
+            else:
+                variations_fonction.append('$'+str(variations_fonction_initiale[element])+'$,-/')
+    if image_de_borne_2 < variation_fonction[-1]:
+        derniere_variation = image_de_borne_2
+    else:
     
+
     with open(r'C:\Users\Louis\Desktop\tableau variation\tableau_latex.tex', 'w') as file:
         file.write(r"""\documentclass{article}
 \usepackage{tkz-tab}
@@ -210,17 +223,18 @@ $f'(x)=""" + latex(derivee) + r"""$\\
 
 \begin{tikzpicture}
 \tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, variation de $f(x)$/1.5}
-{""" + ','.join(x_values_latex) + r"""}
+{""" + ','.join(valeur_de_x_latex) + r"""}
 \tkzTabLine{""" ','+ ",z ,".join(signes) + r"""}
-\tkzTabVar{""" +premiere_variation + ",".join(variation) + r"""}
+\tkzTabVar{"""+premiere_variation + "$".join(variations_fonction)+'$' + derniere_variation + r"""}
 \end{tikzpicture}
 \end{document}""")
-    print (variations_fonction_initiale)
+        
+    print(variations_fonction_initiale)
+    print (variations_fonction)
 
 def tout_afficher():
     afficher_resultat()
 
-    
 bouton = Button(frame, text="Générer",font = "Times 11 bold", command=tout_afficher)
 bouton.place(x=800, y=58)
 frame.pack()
