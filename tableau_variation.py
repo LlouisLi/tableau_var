@@ -3,7 +3,7 @@ import tkinter as tk
 from sympy import *
 from tkinter import *
 import random as rd
-from tabulate import tabulate
+
 
 # VARIABLES
 couleur_fond = "gray"
@@ -27,7 +27,7 @@ canvas.create_text(140, 70, text="Entrez une fonction_initiale :", font=police_e
 canvas.create_text(538, 45, text="Borne 1", font=police_ecriture)
 canvas.create_text(668, 45, text="Borne 2", font=police_ecriture)
 
-default_function = "x**2-x**3"
+default_function = "x**2-x**3-x**4+x**5"
 default_borne1 = "-100"
 default_borne2 = "100"
 fonction_initiale_var = StringVar()
@@ -102,18 +102,18 @@ def afficher_resultat():
 
         # LES SIGNES
         if element== 0:
-            valeur_de_x = rd.uniform(valeur_borne_1, solution)
+            x_valeur = rd.uniform(valeur_borne_1, solution)
         else:
-            valeur_de_x = rd.uniform(valeur_derivee_en_0[element- 1], solution)
+            x_valeur = rd.uniform(valeur_derivee_en_0[element- 1], solution)
         if element== len(valeur_derivee_en_0) - 1:
-            valeur_de_x = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
-            signe_1 = derivee.subs(x, valeur_de_x)
+            x_value1 = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
+            signe_1 = derivee.subs(x, x_value1)
             if signe_1 > 0:
                 signe = '+'
             else:
                 signe = '-'  
             deuxieme_canvas.create_text(position + 40, 90, text=signe, tags='derivative')
-        signe_1 = derivee.subs(x, valeur_de_x)
+        signe_1 = derivee.subs(x, x_valeur)
         if signe_1 > 0:
             signe = '+'
         else:
@@ -156,7 +156,6 @@ def afficher_resultat():
 
     for element, solution in enumerate(valeur_derivee_en_0):
         solution = solution.evalf()
-
         # LES SIGNES
         if element== 0:
             valeur_de_x = rd.uniform(valeur_borne_1, solution)
@@ -181,31 +180,34 @@ def afficher_resultat():
         fx = fonction_initiale.subs(x, solution).evalf(3)
         variations_fx.append(latex(fx))
 
-    image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(3)
-    image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(3)
-    variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
-    image_de_la_premiere_valeur = fonction_initiale.subs(x,valeur_derivee_en_0[0]).evalf(2)
+        image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(2)
+        image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(2)
+        variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
+        image_de_la_premiere_valeur = fonction_initiale.subs(x,valeur_derivee_en_0[0]).evalf(2)
 
-    variations_fonction=[]
-    if image_de_borne_1 > image_de_la_premiere_valeur:
-        premiere_variation = '+/$'
-        for element in range(len(variations_fonction_initiale)-1):
-            if element%2==0:
-                variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,-/')
+        variations_fonction=[]
+        premiere_variation = ''
+        derniere_variation = str(image_de_borne_2)
+        if not len(signes)==0:
+            if image_de_borne_1 > image_de_la_premiere_valeur:
+                premiere_variation = '+/$'
+                for element in range(len(variations_fonction_initiale)-1):
+                    if element%2==0:
+                        variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,-/')
+                    else:
+                        variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,+/')
             else:
-                variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,+/')
-    else:
-        premiere_variation = '-/$'
-        for element in range(len(variations_fonction_initiale-1)):
-            if element%2==0:
-                variations_fonction.append('$'+str(variations_fonction_initiale[element])+'$,+/')
-            else:
-                variations_fonction.append('$'+str(variations_fonction_initiale[element])+'$,-/')
-    if image_de_borne_2 < variation_fonction[-1]:
-        derniere_variation = image_de_borne_2
-    else:
+                premiere_variation = '-/$'
+                for element in range(len(variations_fonction_initiale)-1):
+                    if element%2==0:
+                        variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,+/')
+                    else:
+                        variations_fonction.append(''+str(variations_fonction_initiale[element])+'$,-/')
+        else:
+            if image_de_borne_1 > image_de_borne_2:
+                variations_fonction.append(''+str()+'$,-/')
+
     
-
     with open(r'C:\Users\Louis\Desktop\tableau variation\tableau_latex.tex', 'w') as file:
         file.write(r"""\documentclass{article}
 \usepackage{tkz-tab}
@@ -216,16 +218,16 @@ def afficher_resultat():
 \geometry{
     left=1.5cm }
 \begin{document}
-TAbleau de variation de $f(x)$\\
+Tbleau de variation de $f(x)$\\
                    
 $f(x)=""" + latex(fonction_initiale) + r"""$\\
 $f'(x)=""" + latex(derivee) + r"""$\\
 
 \begin{tikzpicture}
-\tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, variation de $f(x)$/1.5}
+\tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, variation de $f(x)$/1.2}
 {""" + ','.join(valeur_de_x_latex) + r"""}
 \tkzTabLine{""" ','+ ",z ,".join(signes) + r"""}
-\tkzTabVar{"""+premiere_variation + "$".join(variations_fonction)+'$' + derniere_variation + r"""}
+\tkzTabVar{"""+premiere_variation + "$".join(variations_fonction) + '$'+ derniere_variation +'$' + r"""}
 \end{tikzpicture}
 \end{document}""")
         
