@@ -26,5 +26,6 @@ $f'(x)=""" + latex(derivee) + r"""$\\
 \end{document}""")
     bouton = Button(frame, text="Générer", font="Times 11 bold", command=afficher_resultat)
     bouton.place(x=800, y=58)
+    
         
 

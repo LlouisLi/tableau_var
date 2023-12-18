@@ -5,8 +5,6 @@ from tkinter import *
 import random as rd
 
 def interface_tkinter():
-    global fonction_initiale_var, borne1_var, borne2_var
-    global entree_fonction_initiale, borne_1, borne_2, frame
 
     couleur_fond = "gray"
     police_ecriture = "Arial 12 bold"
@@ -38,11 +36,14 @@ def interface_tkinter():
     entree_fonction_initiale = Entry(frame, width=20, font="Arial 12", bg=couleur_fond, text=fonction_initiale_var)
     borne_1 = Entry(frame, width=8, font="Arial 12", bg=couleur_fond, text=borne1_var)
     borne_2 = Entry(frame, width=8, font="Arial 12", bg=couleur_fond, text=borne2_var)
+    
 
     entree_fonction_initiale.place(x=225, y=60)
     borne_1.place(x=500, y=60)
     borne_2.place(x=630, y=60)
-
+    
 
     frame.pack()
     nom.mainloop()
+
+    return fonction_initiale_var, borne1_var, borne2_var,entree_fonction_initiale,borne_1,borne_2, frame

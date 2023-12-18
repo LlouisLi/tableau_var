@@ -56,14 +56,15 @@ def afficher_resultat():
     valeur_derivee_en_0 = sorted(valeur_derivee_en_0)
     valeur_de_x = [valeur_borne_1] + valeur_derivee_en_0 + [valeur_borne_2]
     valeur_de_x_latex = ['$' + latex(x) + '$' for x in valeur_de_x]
+
     signes = []  
     variations_fx = []
-    
-    if not valeur_derivee_en_0:
-        valeur_derivee_en_0 = [valeur_borne_1]
+    # if not valeur_derivee_en_0:
+    #     valeur_derivee_en_0 = [valeur_borne_1]
 
 
     for element, solution in enumerate(valeur_derivee_en_0):
+
         # LES SIGNES
         if element== 0:
             valeur_de_x = rd.uniform(valeur_borne_1, solution)
@@ -84,24 +85,21 @@ def afficher_resultat():
             else:
                 signe = '-'
             signes.append(str(signe))
-        print(signes)
 
 
         fx = fonction_initiale.subs(x, solution).evalf(3)
         variations_fx.append(latex(fx))
-        image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(2)
-        image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(2)
+        image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(3)
+        image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(3)
         variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
-        image_de_la_derniere_valeur = fonction_initiale.subs(x,valeur_derivee_en_0[-1]).evalf(2)
+        image_de_la_derniere_valeur = fonction_initiale.subs(x,valeur_derivee_en_0[-1]).evalf(3)
+        
+        #VARIATION LATEX
         variations_fonction=[]
-
-
         if image_de_la_derniere_valeur >image_de_borne_2:
             derniere_variation = '-/$'+str(image_de_borne_2)+'$'
         else:
             derniere_variation = '+/$'+str(image_de_borne_2)+'$'
-
-        
         for element in range(len(signes)):
             if signes[element]=='+':
                 variations_fonction.append('-/$'+str(variations_fonction_initiale[element])+'$,')
@@ -132,9 +130,9 @@ $f'(x)=""" + latex(derivee) + r"""$\\
 \end{tikzpicture}
 \end{document}""")
         
-    print(variations_fonction_initiale)
-    print (variations_fonction)
-    print(valeur_derivee_en_0)
+    # print(variations_fonction_initiale)
+    # print (variations_fonction)
+    # print(valeur_derivee_en_0)
 
 def tout_afficher():
     afficher_resultat()
