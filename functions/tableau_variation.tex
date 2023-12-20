@@ -9,13 +9,13 @@
 \begin{document}
 \underline{Tableau de variation de $f(x)$}\\
                    
-$f(x)=\left(x - 2\right) \left(x - 1\right) \left(x + 1\right) \left(x + 2\right)$\\
-$f'(x)=\left(x - 2\right) \left(x - 1\right) \left(x + 1\right) + \left(x - 2\right) \left(x - 1\right) \left(x + 2\right) + \left(x - 2\right) \left(x + 1\right) \left(x + 2\right) + \left(x - 1\right) \left(x + 1\right) \left(x + 2\right)$\\
+$f(x)=\frac{\left(x - 2\right) \left(x - 1\right)}{x}$\\
+$f'(x)=\frac{x - 2}{x} + \frac{x - 1}{x} - \frac{\left(x - 2\right) \left(x - 1\right)}{x^{2}}$\\
 
 \begin{tikzpicture}
 \tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, variation de $f(x)$/1.2}
-{$-5.0$,$- \frac{\sqrt{10}}{2}$,$0$,$\frac{\sqrt{10}}{2}$,$5.0$}
-\tkzTabLine{,-,z,+,z,-,z,+}
-\tkzTabVar{+/$504.$,-/$-2.25$,+/$4.0$,-/$-2.25$,+/$504.$}
+{$-10.0$,$- \sqrt{2}$,$\sqrt{2}$,$10.0$}
+\tkzTabLine{,+,z,-,z,+}
+\tkzTabVar{-/$-13.2$,+/$-5.83$,-/$-0.172$,+/$7.20$}
 \end{tikzpicture}
 \end{document}

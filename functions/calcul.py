@@ -3,6 +3,7 @@ import tkinter as tk
 from sympy import *
 from tkinter import *
 import random as rd
+fonction = '(x-2)*(x-1)/x'
 
 def afficher_borne(borne_1, borne_2):
     valeur_borne_1, valeur_borne_2 = borne_1, borne_2
@@ -22,14 +23,18 @@ def calculer_derivee(valeur_borne_1,valeur_borne_2,entree_fonction_initiale):
     derivee = diff(fonction_initiale,x)
     valeur_derivee_en_0 = solve(derivee, x)
     valeur_derivee_en_0 = sorted(valeur_derivee_en_0)
+    if len(valeur_derivee_en_0) == 0  :
+        valeur_derivee_en_0 = [valeur_borne_1]
     valeur_de_x = [valeur_borne_1] + valeur_derivee_en_0 + [valeur_borne_2]
-    valeur_de_x_latex = ['$' + latex(x) + '$' for x in valeur_de_x]
-    return valeur_derivee_en_0 , derivee , x , fonction_initiale, valeur_de_x_latex
+    valeurs_de_x_latex = ['$' + latex(x) + '$' for x in valeur_de_x]
 
-valeur_derivee_en_0, derivee, x , fonction_initiale , valeurs_de_x_latex = calculer_derivee(valeur_borne_1, valeur_borne_2, '(x-2)*(x-1)*(x+1)*(x+2)')
-print(valeur_derivee_en_0)
+    return valeur_derivee_en_0 , derivee , x , fonction_initiale, valeurs_de_x_latex
 
+calculer_derivee(valeur_borne_1, valeur_borne_2,fonction )
+valeur_derivee_en_0, derivee, x , fonction_initiale , valeurs_de_x_latex = calculer_derivee(valeur_borne_1, valeur_borne_2, fonction)
 
+def non_derivee_0():
+    pass
 def afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x):
     signes = []
     for element, solution in enumerate(valeur_derivee_en_0):
@@ -89,4 +94,30 @@ def afficher_variation( image_de_borne_2 ,variations_fonction_initiale , image_d
 
 variations_fonction_latex, derniere_variation_latex = afficher_variation(image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur)
 print(variations_fonction_latex, derniere_variation_latex)
- 
+
+def afficher_latex(fonction_initiale , derivee , valeurs_de_x_latex , signes , variations_fonction_latex , derniere_variation_latex):
+    with open(r'C:\Users\Louis\Desktop\tableau variation\functions\tableau_variation.tex', 'w+') as file:
+        file.write(r"""\documentclass{article}
+\usepackage{tkz-tab}
+\usepackage{amsmath} 
+\usepackage{geometry}
+\usepackage{indentfirst}
+\setlength{\parindent}{0cm} % Retrait du paragraphe
+\geometry{
+    left=1cm }
+\begin{document}
+\underline{Tableau de variation de $f(x)$}\\
+                   
+$f(x)=""" + latex(fonction_initiale) + r"""$\\
+$f'(x)=""" + latex(derivee) + r"""$\\
+
+\begin{tikzpicture}
+\tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, variation de $f(x)$/1.2}
+{""" + ','.join(valeurs_de_x_latex) + r"""}
+\tkzTabLine{""" ','+ ",z,".join(signes) + r"""}
+\tkzTabVar{""" + "".join(variations_fonction_latex) + derniere_variation_latex  + r"""}
+\end{tikzpicture}
+\end{document}""") 
+
+afficher_latex(fonction_initiale , derivee , valeurs_de_x_latex , signes , variations_fonction_latex , derniere_variation_latex)
+
