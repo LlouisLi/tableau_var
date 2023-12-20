@@ -24,9 +24,9 @@ def calculer_derivee(valeur_borne_1,valeur_borne_2,entree_fonction_initiale):
     valeur_derivee_en_0 = sorted(valeur_derivee_en_0)
     valeur_de_x = [valeur_borne_1] + valeur_derivee_en_0 + [valeur_borne_2]
     valeur_de_x_latex = ['$' + latex(x) + '$' for x in valeur_de_x]
-    return valeur_derivee_en_0 , derivee , x , fonction_initiale
+    return valeur_derivee_en_0 , derivee , x , fonction_initiale, valeur_de_x_latex
 
-valeur_derivee_en_0, derivee, x , fonction_initiale= calculer_derivee(valeur_borne_1, valeur_borne_2, '(x-2)*(x-1)*(x+1)*(x+2)')
+valeur_derivee_en_0, derivee, x , fonction_initiale , valeurs_de_x_latex = calculer_derivee(valeur_borne_1, valeur_borne_2, '(x-2)*(x-1)*(x+1)*(x+2)')
 print(valeur_derivee_en_0)
 
 
@@ -64,17 +64,16 @@ def stocker_valeur(valeur_borne_1, valeur_borne_2):
     for solution in valeur_derivee_en_0:
         fx = fonction_initiale.subs(x, solution).evalf(3)
         variations_fx.append(latex(fx))
-    image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1)
-    image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2)
+    image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(3)
+    image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(3)
     variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
     image_de_la_derniere_valeur = fonction_initiale.subs(x, valeur_derivee_en_0[-1]).evalf(2)
     return variations_fx, image_de_borne_1, image_de_borne_2, variations_fonction_initiale, image_de_la_derniere_valeur
 
-# Utilisation de la fonction avec la variable `solution`
 variations_fx, image_de_borne_1, image_de_borne_2, variations_fonction_initiale, image_de_la_derniere_valeur = stocker_valeur(valeur_borne_1, valeur_borne_2)
 print(variations_fonction_initiale)
 
-def afficher_variation(image_de_borne_1 , image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur):
+def afficher_variation( image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur):
     variations_fonction_latex = []
     if not len(signes)==0:
             if image_de_la_derniere_valeur >image_de_borne_2:
@@ -87,8 +86,7 @@ def afficher_variation(image_de_borne_1 , image_de_borne_2 ,variations_fonction_
                 if signes[element]=='-':
                     variations_fonction_latex.append('+/$'+str(variations_fonction_initiale[element])+'$,')
     return variations_fonction_latex, derniere_variation_latex
-variations_fonction_latex, derniere_variation_latex = afficher_variation(image_de_borne_1 , image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur)
+
+variations_fonction_latex, derniere_variation_latex = afficher_variation(image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur)
 print(variations_fonction_latex, derniere_variation_latex)
-# afficher_signes()
-# stocker_valeur()
-# afficher_variation()
+ 
