@@ -106,7 +106,7 @@ def afficher_resultat():
             if signes[element]=='-':
                 variations_fonction.append('+/$'+str(variations_fonction_initiale[element])+'$,')
     
-    
+    print(variations_fonction_initiale)
     with open(r'C:\Users\Louis\Desktop\tableau variation\tableau_latex.tex', 'w') as file:
         file.write(r"""\documentclass{article}
 \usepackage{tkz-tab}

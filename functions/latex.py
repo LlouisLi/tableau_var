@@ -21,11 +21,9 @@ $f'(x)=""" + latex(derivee) + r"""$\\
 \tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, variation de $f(x)$/1.2}
 {""" + ','.join(valeur_de_x_latex) + r"""}
 \tkzTabLine{""" ','+ ",z,".join(signes) + r"""}
-\tkzTabVar{""" + "".join(variations_fonction) + derniere_variation  + r"""}
+\tkzTabVar{""" + "".join(variations_fonction_latex) + derniere_variation  + r"""}
 \end{tikzpicture}
 \end{document}""")
     bouton = Button(frame, text="Générer", font="Times 11 bold", command=afficher_resultat)
     bouton.place(x=800, y=58)
     
-        
-
