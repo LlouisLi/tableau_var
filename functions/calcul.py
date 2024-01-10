@@ -3,17 +3,17 @@ import tkinter as tk
 from sympy import *
 from tkinter import *
 import random as rd
-fonction = '(x-2)*(x-1)/x'
+fonction = 'x**3+3*x'
 
 def afficher_borne(borne_1, borne_2):
     valeur_borne_1, valeur_borne_2 = borne_1, borne_2
     valeur_borne_1, valeur_borne_2 = sympify(valeur_borne_1), sympify(valeur_borne_2)
-    valeur_borne_1 = float(valeur_borne_1)
-    valeur_borne_2 = float(valeur_borne_2)
+    
     return valeur_borne_1,valeur_borne_2
 
 valeur_borne_1, valeur_borne_2 = afficher_borne(-10, 10 )
 print(valeur_borne_1, valeur_borne_2)
+
 
 
 def calculer_derivee(valeur_borne_1,valeur_borne_2,entree_fonction_initiale):
@@ -22,37 +22,51 @@ def calculer_derivee(valeur_borne_1,valeur_borne_2,entree_fonction_initiale):
     fonction_initiale = sympify(fonction_initiale)
     derivee = diff(fonction_initiale,x)
     valeur_derivee_en_0 = solve(derivee, x)
+    valeur_derivee_en_0 = [val for val in valeur_derivee_en_0 if not val.is_imaginary]
     valeur_derivee_en_0 = sorted(valeur_derivee_en_0)
-    if len(valeur_derivee_en_0) == 0  :
-        valeur_derivee_en_0 = [valeur_borne_1]
     valeur_de_x = [valeur_borne_1] + valeur_derivee_en_0 + [valeur_borne_2]
+    print (valeur_derivee_en_0)
+    if len(valeur_derivee_en_0) == 0:
+        valeur_derivee_en_0 = [valeur_borne_1]
+        valeur_de_x =  [valeur_borne_1]+ [valeur_borne_2]
+    
     valeurs_de_x_latex = ['$' + latex(x) + '$' for x in valeur_de_x]
 
-    return valeur_derivee_en_0 , derivee , x , fonction_initiale, valeurs_de_x_latex
+    return valeur_derivee_en_0 , derivee , x , fonction_initiale, valeurs_de_x_latex , valeur_de_x
 
 calculer_derivee(valeur_borne_1, valeur_borne_2,fonction )
-valeur_derivee_en_0, derivee, x , fonction_initiale , valeurs_de_x_latex = calculer_derivee(valeur_borne_1, valeur_borne_2, fonction)
+valeur_derivee_en_0, derivee, x , fonction_initiale , valeurs_de_x_latex , valeur_de_x = calculer_derivee(valeur_borne_1, valeur_borne_2, fonction)
 
-def non_derivee_0():
-    pass
-def afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x):
+
+
+def afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x,valeur_de_x):
     signes = []
     for element, solution in enumerate(valeur_derivee_en_0):
         # LES SIGNES
-        if element== 0:
-            valeur_de_x = rd.uniform(valeur_borne_1, solution)
-            signe_1 = derivee.subs(x, valeur_de_x)
-        else:
-            valeur_de_x = rd.uniform(valeur_derivee_en_0[element- 1], solution)
-            signe_1 = derivee.subs(x, valeur_de_x)
-        if signe_1 > 0:
-            signe = '+'
-        else:
-            signe = '-'       
-        signes.append(str(signe))
-        if element == len(valeur_derivee_en_0) - 1:
-            valeur_de_x = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
-            signe_1 = derivee.subs(x, valeur_de_x)
+        if len(valeur_derivee_en_0)>1:
+            if element== 0:
+                valeur_de_x_aleatoire = rd.uniform(valeur_de_x[0], solution)
+                signe_1 = derivee.subs(x, valeur_de_x_aleatoire)
+                print(valeur_de_x)
+            else:
+                valeur_de_x_aleatoire = rd.uniform(valeur_derivee_en_0[element- 1], solution)
+                signe_1 = derivee.subs(x, valeur_de_x_aleatoire)
+            if signe_1 > 0:
+                signe = '+'
+            else:
+                signe = '-'       
+            signes.append(str(signe))
+            if element == len(valeur_derivee_en_0) - 1:
+                valeur_de_x_aleatoire = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
+                signe_1 = derivee.subs(x, valeur_de_x_aleatoire)
+                if signe_1 > 0:
+                    signe = '+'
+                else:
+                    signe = '-'
+                signes.append(str(signe))
+        else : 
+            valeur_de_x_aleatoire = rd.uniform(valeur_derivee_en_0[element], valeur_borne_2)
+            signe_1 = derivee.subs(x, valeur_de_x_aleatoire)
             if signe_1 > 0:
                 signe = '+'
             else:
@@ -60,23 +74,27 @@ def afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x)
             signes.append(str(signe))
     return signes
 
-signes = afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x)
+signes = afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x,valeur_de_x)
 print(signes)
+
 
 
 def stocker_valeur(valeur_borne_1, valeur_borne_2):
     variations_fx = []
     for solution in valeur_derivee_en_0:
-        fx = fonction_initiale.subs(x, solution).evalf(3)
+        fx = fonction_initiale.subs(x, solution)
         variations_fx.append(latex(fx))
-    image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1).evalf(3)
-    image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2).evalf(3)
+    image_de_borne_1 = fonction_initiale.subs(x, valeur_borne_1)
+    image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2)
     variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
-    image_de_la_derniere_valeur = fonction_initiale.subs(x, valeur_derivee_en_0[-1]).evalf(2)
+
+    image_de_la_derniere_valeur = fonction_initiale.subs(x, valeur_de_x[-2])
     return variations_fx, image_de_borne_1, image_de_borne_2, variations_fonction_initiale, image_de_la_derniere_valeur
 
 variations_fx, image_de_borne_1, image_de_borne_2, variations_fonction_initiale, image_de_la_derniere_valeur = stocker_valeur(valeur_borne_1, valeur_borne_2)
 print(variations_fonction_initiale)
+
+
 
 def afficher_variation( image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur):
     variations_fonction_latex = []
@@ -88,12 +106,14 @@ def afficher_variation( image_de_borne_2 ,variations_fonction_initiale , image_d
             for element in range(len(signes)):
                 if signes[element]=='+':
                     variations_fonction_latex.append('-/$'+str(variations_fonction_initiale[element])+'$,')
-                if signes[element]=='-':
+                else:
                     variations_fonction_latex.append('+/$'+str(variations_fonction_initiale[element])+'$,')
     return variations_fonction_latex, derniere_variation_latex
 
 variations_fonction_latex, derniere_variation_latex = afficher_variation(image_de_borne_2 ,variations_fonction_initiale , image_de_la_derniere_valeur)
 print(variations_fonction_latex, derniere_variation_latex)
+
+
 
 def afficher_latex(fonction_initiale , derivee , valeurs_de_x_latex , signes , variations_fonction_latex , derniere_variation_latex):
     with open(r'C:\Users\Louis\Desktop\tableau variation\functions\tableau_variation.tex', 'w+') as file:
@@ -120,4 +140,3 @@ $f'(x)=""" + latex(derivee) + r"""$\\
 \end{document}""") 
 
 afficher_latex(fonction_initiale , derivee , valeurs_de_x_latex , signes , variations_fonction_latex , derniere_variation_latex)
-
