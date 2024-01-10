@@ -3,7 +3,7 @@ import tkinter as tk
 from sympy import *
 from tkinter import *
 import random as rd
-fonction = 'x**3+3*x'
+fonction = '9*x+x**2'
 
 def afficher_borne(borne_1, borne_2):
     valeur_borne_1, valeur_borne_2 = borne_1, borne_2
@@ -43,7 +43,7 @@ def afficher_signes(valeur_derivee_en_0,valeur_borne_1,valeur_borne_2,derivee,x,
     signes = []
     for element, solution in enumerate(valeur_derivee_en_0):
         # LES SIGNES
-        if len(valeur_derivee_en_0)>1:
+        if len(valeur_de_x)>2:
             if element== 0:
                 valeur_de_x_aleatoire = rd.uniform(valeur_de_x[0], solution)
                 signe_1 = derivee.subs(x, valeur_de_x_aleatoire)
@@ -88,7 +88,7 @@ def stocker_valeur(valeur_borne_1, valeur_borne_2):
     image_de_borne_2 = fonction_initiale.subs(x, valeur_borne_2)
     variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
 
-    image_de_la_derniere_valeur = fonction_initiale.subs(x, valeur_de_x[-2])
+    image_de_la_derniere_valeur = fonction_initiale.subs(x, valeur_de_x[-1])
     return variations_fx, image_de_borne_1, image_de_borne_2, variations_fonction_initiale, image_de_la_derniere_valeur
 
 variations_fx, image_de_borne_1, image_de_borne_2, variations_fonction_initiale, image_de_la_derniere_valeur = stocker_valeur(valeur_borne_1, valeur_borne_2)
