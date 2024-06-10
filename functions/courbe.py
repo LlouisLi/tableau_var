@@ -15,5 +15,5 @@ def tracer_fonction(fonction, xmin, xmax, num_points=100):
 
 # Test avec une fonction quadratique
 def f(x):
-    return 1/x
+    return x**2
 tracer_fonction(f, -1, 1)
