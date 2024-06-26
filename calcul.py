@@ -2,17 +2,15 @@ import sympy as sp
 from sympy import *
 import random as rd
 
-fonction = 'ln(x)'
+fonction = '(x**3)*(x+1)*(x-2)'
 
-
-# print(rd.randint(-oo,0))
 
 def afficher_borne(borne_1, borne_2):
     valeur_borne_1 = sympify(borne_1)
     valeur_borne_2 = sympify(borne_2)
     return valeur_borne_1,valeur_borne_2
 
-valeur_borne_1, valeur_borne_2 = afficher_borne(0,+oo) 
+valeur_borne_1, valeur_borne_2 = afficher_borne(-oo,+oo) 
 
 
 def calculer_derivee(valeur_borne_1,valeur_borne_2,entree_fonction_initiale):
@@ -74,8 +72,9 @@ def variations_de_fx(valeur_borne_1, valeur_borne_2,valeur_de_x):
     # variations_fonction_initiale = [image_de_borne_1] + variations_fx + [image_de_borne_2]
     image_de_la_derniere_valeur = fonction_initiale.subs(x, valeur_de_x[-2])
 
+    signes_intermediaire = signes.copy()
     for i in range(len(signes)-1):
-        if signes[i]=='+' and signes[i+1]=='+':
+        if(signes_intermediaire[i]=='+' and signes_intermediaire[i+1]=='+') or (signes_intermediaire[i]=='-' and signes_intermediaire[i+1]=='-'):
             del(variations_fx[i+1])
             del(signes[i])
             del(valeur_de_x[i+1])
@@ -104,12 +103,10 @@ def afficher_variation_latex( image_de_borne_2 , image_de_la_derniere_valeur,sig
                 derniere_variation_latex = '-/$'+latex(image_de_borne_2)+'$'
             break
 
-        if variations_fx[element] <= variations_fx[element+1]:
+        if variations_fx[element] < variations_fx[element+1]:
             variations_fonction_latex.append('-/$'+str(variations_fx[element])+'$,')
         else:
-            print (valeur_de_x[element])
             variations_fonction_latex.append('+/$'+str(variations_fx[element])+'$,')      
-    
 
     return variations_fonction_latex, derniere_variation_latex, valeurs_de_x_latex
 
@@ -135,7 +132,7 @@ $f(x)=""" + latex(fonction_initiale) + r"""$\\
 $f'(x)=""" + latex(derivee) + r"""$\\
 
 \begin{tikzpicture}
-\tkzTabInit[espcl=3]{$x$ / 1 , $f'(x)$ / 1, $f(x)$/2.5}
+\tkzTabInit[espcl=4]{$x$ / 1 , $f'(x)$ / 1, $f(x)$/3}
 {""" + ','.join(valeurs_de_x_latex) + r"""}
 \tkzTabLine{""" ','+ ",z,".join(signes) + r"""}
 \tkzTabVar{""" + "".join(variations_fonction_latex) + derniere_variation_latex  + r"""}
@@ -144,3 +141,9 @@ $f'(x)=""" + latex(derivee) + r"""$\\
 \end{document}""") 
 
 afficher_latex(fonction_initiale , derivee , valeurs_de_x_latex , signes , variations_fonction_latex , derniere_variation_latex)
+
+
+
+
+
+
